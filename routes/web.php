@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\HomePageController;
+use App\Http\Controllers\GameController;
 use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -21,4 +22,5 @@ Route::get('/', function () {
 Route::get('/home-page', function () {
     return view('home-page');
 });
+Route::get('/games', [GameController::class, 'index']);
 
