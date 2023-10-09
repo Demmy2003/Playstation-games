@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\GameController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 
 
 /*
@@ -24,3 +25,7 @@ Route::get('/home-page', function () {
 });
 Route::get('/games', [GameController::class, 'index']);
 
+
+Auth::routes(['verify'=>true]);
+
+Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware(["verified"]);
