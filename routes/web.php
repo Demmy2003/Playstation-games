@@ -19,11 +19,8 @@ use App\Http\Controllers\HomeController;
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::get('/home-page', function () {
-    return view('home-page');
-});
-Route::get('/games', [GameController::class, 'index']);
+Route::get('/games', [GameController::class, 'index'])->name('games');
+Route::post('/games/create', [GameController::class, 'create'])->name('games.create');
 
 
 Auth::routes(['verify'=>true]);

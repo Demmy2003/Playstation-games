@@ -2,19 +2,16 @@
 
 namespace App\Models;
 
-use Couchbase\Role;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Game extends Model
+class Genre extends Model
 {
     use HasFactory;
-    public function genres(): BelongsToMany
+    public function games(): BelongsToMany
     {
-        return $this->belongsToMany(Genre::class);
+        return $this->belongsToMany(Game::class);
     }
 }
-
-
-
