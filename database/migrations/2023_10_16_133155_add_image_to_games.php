@@ -11,15 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-
-        Schema::create('games', function (Blueprint $table) {
-            $table->id();
-            $table->string('title', 100);
-            $table->text('description');
-            $table->float('rating');
-            $table->timestamps();
+        Schema::table('games', function (Blueprint $table) {
+            $table->string('image')->nullable();
         });
-
     }
 
     /**
@@ -27,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::table('games', function (Blueprint $table) {
+            //
+        });
     }
 };

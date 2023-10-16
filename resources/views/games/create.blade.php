@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 @section('content')
-        <form action="{{ route('games') }}" method="POST">
+        <form action="{{ route('games.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="form-group">
                 <label for="title">Title</label>
@@ -17,11 +17,16 @@
             </div>
             <div class="form-group">
                 <label for="genres">Genres</label>
+                <p>Hold 'CTRL' to select multiple</p>
                 <select name="genres[]" id="genres" class="form-control" multiple>
                     @foreach ($genres as $genre)
-                        <option value="{{ $genre->id}}">{{ $genre->genre}}</option>
+                        <option value="{{ $genre->id }}">{{ $genre->genre_name }}</option>
                     @endforeach
                 </select>
+            </div>
+            <div class="form-group">
+                <label for="image">Image</label>
+                <input type="file" name="image" id="image" class="form-control-file">
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
