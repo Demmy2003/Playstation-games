@@ -25,6 +25,15 @@
                 </select>
             </div>
             <div class="form-group">
+                <label for="modes">Modes</label>
+                <p>Hold 'CTRL' to select multiple</p>
+                <select name="modes[]" id="modes" class="form-control" multiple>
+                    @foreach ($modes as $mode)
+                        <option value="{{ $mode->id }}">{{ $mode->mode }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="form-group">
                 <label for="image">Image</label>
                 <input type="file" name="image" id="image" class="form-control-file">
             </div>

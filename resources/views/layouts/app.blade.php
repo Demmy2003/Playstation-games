@@ -25,8 +25,10 @@
 
                     <a class="nav-link" href="{{ route('games.index') }}">Home</a>
 
-
+                @can('edit games')
                     <a class="nav-link" href="{{ route('games.create') }}">Create</a>
+
+                @endcan
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>

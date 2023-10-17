@@ -15,6 +15,13 @@
                 @foreach($game->genres as $genre)
                     <li>{{$genre->genre_name}}</li>
                 @endforeach
+
+            </ul>
+            <ul>
+                @foreach($game->modes as $mode)
+                    <li>{{$mode->mode}}</li>
+                @endforeach
+
             </ul>
         @endforeach
     </ul>

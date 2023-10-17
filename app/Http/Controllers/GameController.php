@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\Game;
 use App\Models\Genre;
+use App\Models\Mode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -16,10 +17,10 @@ class GameController
     }
     public function create()
     {
-
         $genres = Genre::all();
+        $modes = Mode::all();
 
-        return view('games.create', compact('genres'));
+        return view('games.create', compact('genres','modes'));
 
     }
     public function store(Request $request)
@@ -29,6 +30,7 @@ class GameController
             'description' => 'required|string',
             'rating' => 'required|numeric',
             'genres' => 'required|array',
+            'modes' => 'required|array',
             'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
         Storage::disk('public')->makeDirectory('game_images');
@@ -47,6 +49,7 @@ class GameController
         ]);
 
         $game->genres()->attach($data['genres']);
+        $game->modes()->attach($data['modes']);
 
         return redirect()->route('games.index');
     }
