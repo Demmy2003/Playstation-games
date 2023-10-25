@@ -2,8 +2,14 @@
     ?>
 @extends('layouts.app')
 @section('content')
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
     <h1>Games</h1>
-        @foreach($games as $game)
+
+      @foreach($games as $game)
             <div class='game-container'>
                 <a class="nav-link" href="{{route('games.detail', $game)}}">
                     <h4>{{$game->title}}</h4>

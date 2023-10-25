@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 
 class GameController
 {
-    public   function index()
+    public function index()
     {
         $games = Game::with('genres')->get();
         return view('games.index', ['games' => $games]);
@@ -19,14 +19,7 @@ class GameController
     {
         return view('games.detail', compact('game'));
     }
-    public function create()
-    {
-        $genres = Genre::all();
-        $modes = Mode::all();
 
-        return view('games.create', compact('genres','modes'));
-
-    }
     public function store(Request $request)
     {
         $data = $request->validate([
