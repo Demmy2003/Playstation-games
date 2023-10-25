@@ -24,12 +24,26 @@ Route::get('/', function () {
 //
 //Route::post('/games', [GameController::class, 'store'])->name('games.store');
 //Route::get('/games/create', [GameController::class, 'create'])->name('games.create')->middleware('admin');
+
+//general game overview
 Route::get('/games', [GameController::class, 'index'])->name('games.index');
 
+// Game detail overview
+Route::get('/games/{game}', [GameController::class, 'detail'])->name('games.detail');
+
+// only with permission can create games
 Route::group(['middleware' => [Authorize::using('create games')]], function () {
     Route::get('/games/create', [GameController::class, 'create'])->name('games.create');
 
     Route::post('/games', [GameController::class, 'store'])->name('games.store');
+});
+// only with permission can edit games
+Route::group(['middleware' => [Authorize::using('edit games')]], function () {
+    Route::get('/games/{game}/edit', [GameController::class, 'edit'])->name('games.edit');
+    Route::put('/games/{game}', [GameController::class, 'update'])->name('games.update');
+});
+Route::group(['middleware' => [Authorize::using('delete games')]], function () {
+    Route::delete('/games/{game}', [GameController::class, 'destroy'])->name('games.destroy');
 });
 
 Route::get('/assign-roles', [RoleController::class, 'assignRoles']);

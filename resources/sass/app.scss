@@ -10,3 +10,36 @@
 .create {
     color: black;
 }
+.pic {
+    width: 33%;
+    object-fit: cover;
+}
+.game-container {
+    display: inline-block;
+    width: calc(30% - 20px); /* Adjust the width and margins as needed */
+    margin: 10px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    a{
+        text-decoration: none;
+    }
+    h4 {
+        font-size: 18px;
+        font-weight: bold;
+    }
+    img {
+        width: 100%; /* Ensure square images */
+        height: auto; /* Maintain aspect ratio */
+        max-height: 200px; /* Define a maximum image height */
+        object-fit: cover;
+    }
+    ul {
+        padding: 0;
+        list-style: none;
+        font-style: italic;
+    }
+    p {
+        font-size: 16px;
+    }
+
+}

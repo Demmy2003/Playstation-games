@@ -3,26 +3,30 @@
 @extends('layouts.app')
 @section('content')
     <h1>Games</h1>
-    <ul>
         @foreach($games as $game)
-            <h4>{{$game->title}}</h4>
-            @if($game->image)
-                    <img src="{{ asset('storage/' . $game->image) }}" alt="{{ $game->title }} Image">
-            @endif
+            <div class='game-container'>
+                <a class="nav-link" href="{{route('games.detail', $game)}}">
+                    <h4>{{$game->title}}</h4>
+                    @if($game->image)
+                        <img class='pic' src="{{ asset('storage/' . $game->image) }}" alt="{{ $game->title }} Image">
+                    @endif
 
-            <p>Rating: {{$game->rating}}</p>
-            <ul>
-                @foreach($game->genres as $genre)
-                    <li>{{$genre->genre_name}}</li>
-                @endforeach
+                    <p>Rating: {{$game->rating}}</p>
+                    <p>Genres:</p>
+                    <ul>
+                        @foreach($game->genres as $genre)
+                            <li>{{$genre->genre_name}}</li>
+                        @endforeach
 
-            </ul>
-            <ul>
-                @foreach($game->modes as $mode)
-                    <li>{{$mode->mode}}</li>
-                @endforeach
+                    </ul>
+                    <p>Modes:</p>
+                    <ul>
+                        @foreach($game->modes as $mode)
+                            <li>{{$mode->mode}}</li>
+                        @endforeach
 
-            </ul>
+                    </ul>
+                </a>
+            </div>
         @endforeach
-    </ul>
 @endsection
