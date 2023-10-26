@@ -2,14 +2,14 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
 
-class phpPermissionRoleSeeder extends Seeder
+class PermissionSeeder extends Seeder
 {
+
     /**
      * Run the database seeds.
      */
@@ -31,8 +31,8 @@ class phpPermissionRoleSeeder extends Seeder
         $user = Role::create(['name'=>'user']);
 
 
-        $admin->givePermisionTo(Permission::all());
-        $moderator->givePermisionTo(['edit games', 'delete games', 'create games']);
-        $user->givePermisionTo(['create reviews', 'edit reviews','delete reviews']);
+        $admin->givePermissionTo(Permission::all());
+        $moderator->givePermissionTo(['edit games', 'delete games', 'create games']);
+        $user->givePermissionTo(['create reviews', 'edit reviews', 'delete reviews']);
     }
 }
