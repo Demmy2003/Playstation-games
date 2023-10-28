@@ -8,6 +8,7 @@ use App\Models\Mode;
 class CreateController
 {
     public function create() {
+
             $genres = Genre::all();
             $modes = Mode::all();
 

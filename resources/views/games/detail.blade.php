@@ -1,6 +1,13 @@
 @extends('layouts.app')
-
+@section('title')
+    {{ $game->title }}
+@endsection
 @section('content')
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
     <h1>{{ $game->title }}</h1>
 
     @if ($game->image)
@@ -10,6 +17,10 @@
     <p>Rating: {{ $game->rating }}</p>
     <h2>Description:</h2>
     <p>{{$game->description}}</p>
+
+    @if($game->user)
+        <p>Created by: {{ $game->user->name }}</p>
+    @endif
 
     <h2>Genres:</h2>
     <ul>

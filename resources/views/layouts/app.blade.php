@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title> @yield('title')| {{ config('app.name') }}</title>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.bunny.net">
@@ -15,7 +15,7 @@
     <!-- Scripts -->
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
 </head>
-<body>
+<body >
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
             <div class="container">
@@ -23,14 +23,8 @@
                     {{ config('app.name', 'Laravel') }}
                 </a>
 
-                    <a class="nav-link" href="{{ route('games.index') }}">Home</a>
 
-                @can('create games')
-                    <a class="nav-link" href="{{ route('create-games') }}">Create</a>
-                @endcan
-                @hasrole('admin')
-                <a class="nav-link" href="{{ route('admin.index') }}">Admin</a>
-                @endhasrole
+
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
                     <span class="navbar-toggler-icon"></span>
@@ -39,13 +33,24 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
+                        <a class="nav-link" href="{{ route('games.index') }}">Home</a>
 
+                        @can('create games')
+                            <a class="nav-link" href="{{ route('create-games') }}">Create</a>
+                        @endcan
                     </ul>
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ms-auto">
                         <!-- Authentication Links -->
-                        @guest
+                        <form action="{{ route('games.search') }}" method="GET">
+                            <input type="text" name="search" placeholder="Search for games...">
+                            <button type="submit">Search</button>
+                        </form>
+                        @hasrole('admin')
+                        <a class="nav-link" href="{{ route('admin.index') }}">Admin</a>
+                        @endhasrole
+                    @guest
                             @if (Route::has('login'))
                                 <li class="nav-item">
                                     <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>

@@ -1,38 +1,35 @@
 <?php
     ?>
 @extends('layouts.app')
+@section('title')
+    Home
+@endsection
 @section('content')
     @if (session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
         </div>
     @endif
-    <h1>Games</h1>
-
-      @foreach($games as $game)
-            <div class='game-container'>
-                <a class="nav-link" href="{{route('games.detail', $game)}}">
-                    <h4>{{$game->title}}</h4>
-                    @if($game->image)
-                        <img class='pic' src="{{ asset('storage/' . $game->image) }}" alt="{{ $game->title }} Image">
-                    @endif
-
-                    <p>Rating: {{$game->rating}}</p>
-                    <p>Genres:</p>
-                    <ul>
-                        @foreach($game->genres as $genre)
-                            <li>{{$genre->genre_name}}</li>
-                        @endforeach
-
-                    </ul>
-                    <p>Modes:</p>
-                    <ul>
-                        @foreach($game->modes as $mode)
-                            <li>{{$mode->mode}}</li>
-                        @endforeach
-
-                    </ul>
-                </a>
+    <div class="search-container">
+        <div class="row">
+            <div class="col-8">
+                <h1>Games</h1>
             </div>
-        @endforeach
+            <div class="col-md-auto">
+                <form action="{{ route('games.search') }}" method="GET">
+                    <input type="text" name="search" placeholder="Search for games...">
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+            <div class="col">
+                @include('partials.filter_games')
+            </div>
+
+        </div>
+    </div>
+
+    @foreach($games as $game)
+
+          @include('partials.game_list')
+    @endforeach
 @endsection

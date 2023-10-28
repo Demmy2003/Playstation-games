@@ -32,14 +32,13 @@ Route::get('/games', [GameController::class, 'index'])->name('games.index');
 
 // Game detail overview
 Route::get('/games/{game}', [GameController::class, 'detail'])->name('games.detail');
-Route::get('/games/new', [CreateController::class, 'new'])->name('games.new');
 
-Route::get('/create_games', function () {
-    return view('create_games');
-});
+Route::get('/search', [GameController::class, 'search'])->name('games.search');
+Route::get('/filter', [GameController::class, 'filter'])->name('games.filter');
+
 
 // only with permission can create games
-Route::group(['middleware' => [Authorize::using('create games')]], function () {
+Route::group(['middleware' => ['auth',Authorize::using('create games')]], function () {
 
     Route::get('/create_games',[CreateController::class, 'create'] )->name('create-games');
     Route::post('/games', [GameController::class, 'store'])->name('games.store');
