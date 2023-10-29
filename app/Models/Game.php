@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Game extends Model
 {
     use HasFactory;
-    protected $fillable = ['title', 'description', 'rating', 'image', 'user_id'];
+    protected $fillable = ['title', 'description', 'rating', 'image', 'user_id', 'total_likes', 'total_dislikes'];
 
     public function genres(): BelongsToMany
     {
@@ -34,17 +34,30 @@ class Game extends Model
     {
         return $this->hasMany(Rating::class);
     }
-    public function calculateTotalRating()
+    public function likes(): HasMany
     {
-        $likes = $this->ratings()->where('type', 'like')->count();
-        $dislikes = $this->ratings()->where('type', 'dislike')->count();
-        if ($dislikes === 0) {
-            $totalRating = 100; // Handle division by zero
-        } else {
-            $totalRating = ($likes / $dislikes) * 10;
-        }
+        return $this->hasMany(Like::class);
+    }
+    public function dislikes(): HasMany
+    {
+        return $this->hasMany(Dislike::class);
+    }
+    public function calculateTotalLikesAndDislikes()
+    {
+        $likes = $this->likes()->count();
+        $dislikes = $this->dislikes()->count();
 
-        $this->rating = $totalRating;
+        // Calculate the rating as a percentage of likes relative to total votes
+        $rating = ($likes / max(($likes + $dislikes), 1)) * 10;
+
+        // Ensure the rating does not go higher than 10
+        $rating = min($rating, 10);
+
+        $this->rating = $rating;
+        $this->total_likes = $likes;
+        $this->total_dislikes = $dislikes;
         $this->save();
     }
+
+
 }

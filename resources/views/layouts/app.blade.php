@@ -34,6 +34,9 @@
                         @can('create games')
                             <a class="nav-link" href="{{ route('create-games') }}">Create</a>
                         @endcan
+                        @hasrole('user')
+                        <a class="nav-link"  href="{{ route('user.comments') }}">Your Comments</a>
+                    @endhasrole
                     </ul>
 
                     <!-- Right Side Of Navbar -->

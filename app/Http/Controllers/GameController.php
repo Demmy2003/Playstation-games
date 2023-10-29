@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 use App\Models\Comment;
+use App\Models\Dislike;
 use App\Models\Game;
 use App\Models\Genre;
+use App\Models\Like;
 use App\Models\Mode;
 use App\Models\Rating;
 use App\Models\User;
@@ -63,20 +65,30 @@ class GameController extends Controller
     }
 
     public function comment(Request $request, Game $game){
+        $user = auth()->user();
 
-        $data = $request->validate([
-            'comment' => 'required|string',
-        ]);
-        if($data) {
-            Comment::create([
-                'comment' => $data['comment'],
-                'game_id' => $game->id,
-                'user_id' => Auth::user()->id,
+        // Check if the user has liked at least 5 games
+        $likedGamesCount = $user->likes()->count();
+        $dislikedGamesCount = $user->dislikes()->count();
+        $totallikesordislikes = $likedGamesCount + $dislikedGamesCount;
+
+
+        if ($totallikesordislikes >= 5 || $user->hasRole('admin')) {
+            $data = $request->validate([
+                'comment' => 'required|string',
             ]);
-            return redirect()->route('games.detail', $game)
-                ->with('success', "Comment added successfully");
+            if ($data) {
+                Comment::create([
+                    'comment' => $data['comment'],
+                    'game_id' => $game->id,
+                    'user_id' => Auth::user()->id,
+                ]);
+                return redirect()->route('games.detail', $game)
+                    ->with('success', "Comment added successfully");
+            }
+        } else {
+            return back()->with('error', 'You must like at least 5 games to post a comment.');
         }
-
     }
 
     public function store(Request $request)
@@ -120,6 +132,7 @@ class GameController extends Controller
         $genres = Genre::all();
         $modes = Mode::all();
 
+
         return view('games.edit', compact('game', 'genres', 'modes'));
     }
     public function update(Request $request, Game $game)
@@ -159,30 +172,53 @@ class GameController extends Controller
     }
     public function rate(Game $game, $type)
     {
-        $user = auth()->user();
-        $existingRating = $game->ratings()->where('user_id', $user->id)->first();
+        if(Auth::check()) {
+            $user = auth()->user();
 
-        if ($existingRating) {
-            // User has already rated, update the rating if needed
-            if ($existingRating->type !== $type) {
-                $existingRating->type = $type;
-                $existingRating->save();
+            $existingLike = $game->likes()->where('user_id', $user->id)->first();
+            $existingDislike = $game->dislikes()->where('user_id', $user->id)->first();
+
+            if ($existingLike) {
+                // User already liked, remove the like
+                $existingLike->delete();
+            } else if ($existingDislike) {
+                // User already disliked, remove the dislike
+                $existingDislike->delete();
+            } else {
+                // User is rating the game for the first time, create a new like or dislike record
+                // Check whether it's a like or dislike action based on user input
+                if ($type === 'like') {
+                    $like = new Like([
+                        'user_id' => $user->id,
+                        'game_id' => $game->id,
+                    ]);
+                    $like->save();
+                } elseif ($type === 'dislike') {
+                    $dislike = new Dislike([
+                        'user_id' => $user->id,
+                        'game_id' => $game->id,
+                    ]);
+                    $dislike->save();
+                }
             }
-        } else {
-            // User is rating for the first time
-            $newRating = new Rating([
-                'user_id' => $user->id,
-                'game_id' => $game->id,
-                'type' => $type,
-            ]);
-            $newRating->save();
+            $game->calculateTotalLikesAndDislikes();
         }
 
         // Update the total rating for the game
-        $game->calculateTotalRating();
+
 
         return back();
     }
+
+    public function showUserComments()
+    {
+        if (auth()->check()) {
+            $user = auth()->user();
+            $comments = $user->comments;
+            return view('user.comments', compact('comments'));
+        }
+    }
+
 
 
 

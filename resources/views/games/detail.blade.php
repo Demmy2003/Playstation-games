@@ -8,6 +8,11 @@
             {{ session('success') }}
         </div>
     @endif
+    @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
     <div class="detail-container">
         <h1>{{ $game->title }}</h1>
 
@@ -89,6 +94,7 @@
         @endif
     </div>
     <a href="{{ route('games.edit', $game) }}" class="btn btn-primary">Edit Game</a>
+
     <form method="POST" action="{{ route('games.destroy', $game) }}">
         @csrf
         @method('DELETE')

@@ -23,18 +23,17 @@ use App\Http\Controllers\HomeController;
 Route::get('/', function () {
     return view('welcome');
 });
-//
-//Route::post('/games', [GameController::class, 'store'])->name('games.store');
-//Route::get('/games/create', [GameController::class, 'create'])->name('games.create')->middleware('admin');
 
 //general game overview
 Route::get('/games', [GameController::class, 'index'])->name('games.index');
 
 // Game detail overview
 Route::get('/games/{game}', [GameController::class, 'detail'])->name('games.detail');
-Route::post('/games/{game}', [GameController::class, 'comment'])->name('games.comment');
+Route::post('/games/{game}', [GameController::class, 'comment'])->name('games.comment')->middleware('user');
 Route::get('/search', [GameController::class, 'search'])->name('games.search');
 Route::get('/filter', [GameController::class, 'filter'])->name('games.filter');
+
+Route::get('/user/comments', [GameController::class, 'showUserComments'])->name('user.comments')->middleware('user');
 
 // Define a route for liking a game
 Route::get('/games/{game}/{rate}', [GameController::class, 'rate'])->name('games.rate');
@@ -46,7 +45,7 @@ Route::group(['middleware' => ['auth',Authorize::using('create games')]], functi
 });
 // only with permission can edit games
 Route::group(['middleware' => [Authorize::using('edit games')]], function () {
-    Route::get('/games/{game}/edit', [GameController::class, 'edit'])->name('games.edit');
+    Route::get('/{game}/edit', [GameController::class, 'edit'])->name('games.edit');
     Route::put('/games/{game}', [GameController::class, 'update'])->name('games.update');
 });
 Route::group(['middleware' => [Authorize::using('delete games')]], function () {
