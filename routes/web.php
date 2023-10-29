@@ -32,14 +32,15 @@ Route::get('/games', [GameController::class, 'index'])->name('games.index');
 
 // Game detail overview
 Route::get('/games/{game}', [GameController::class, 'detail'])->name('games.detail');
-
+Route::post('/games/{game}', [GameController::class, 'comment'])->name('games.comment');
 Route::get('/search', [GameController::class, 'search'])->name('games.search');
 Route::get('/filter', [GameController::class, 'filter'])->name('games.filter');
 
+// Define a route for liking a game
+Route::get('/games/{game}/{rate}', [GameController::class, 'rate'])->name('games.rate');
 
 // only with permission can create games
 Route::group(['middleware' => ['auth',Authorize::using('create games')]], function () {
-
     Route::get('/create_games',[CreateController::class, 'create'] )->name('create-games');
     Route::post('/games', [GameController::class, 'store'])->name('games.store');
 });

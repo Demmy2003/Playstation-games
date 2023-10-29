@@ -14,12 +14,19 @@
     width: 33%;
     object-fit: cover;
 }
+.background {
+    background-color: $blue-900;
+        color: $blue-200;
+
+}
 .game-container {
+    background-color: $blue-800;
+    border-color: $blue-200;
     display: inline-block;
     width: calc(30% - 20px); /* Adjust the width and margins as needed */
     margin: 10px;
     text-align: center;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 0 10px $blue-200;
     a{
         text-decoration: none;
     }
@@ -42,4 +49,40 @@
         font-size: 16px;
     }
 
+}
+.detail-container {
+    background-color: $blue-800;
+    border-color: $blue-200;
+    display: inline-block;
+    width: 80%; /* Adjust the width and margins as needed */
+    margin-left: 10%;
+    margin-right: 10%;
+    padding: 3%;
+    text-align: center;
+    box-shadow: 0 0 10px $blue-200;
+    a{
+        text-decoration: none;
+    }
+    h4 {
+        font-size: 18px;
+        font-weight: bold;
+    }
+    img {
+        width: 100%; /* Ensure square images */
+        height: auto; /* Maintain aspect ratio */
+        object-fit: cover;
+    }
+    ul {
+        padding: 0;
+        list-style: none;
+        font-style: italic;
+    }
+    p {
+        font-size: 16px;
+    }
+
+}
+.search-container {
+    background-color: $blue-800;
+    color: white;
 }

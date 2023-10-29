@@ -10,23 +10,12 @@
             {{ session('success') }}
         </div>
     @endif
-    <div class="search-container">
-        <div class="row">
-            <div class="col-8">
-                <h1>Games</h1>
-            </div>
-            <div class="col-md-auto">
-                <form action="{{ route('games.search') }}" method="GET">
-                    <input type="text" name="search" placeholder="Search for games...">
-                    <button type="submit">Search</button>
-                </form>
-            </div>
-            <div class="col">
-                @include('partials.filter_games')
-            </div>
 
-        </div>
-    </div>
+    @include('partials.filter_games')
+
+    @if($selectedGenres > 0 || $selectedModes > 0 || $search)
+        <p>Search results found: {{$games->count()}}</p>
+    @endif
 
     @foreach($games as $game)
 

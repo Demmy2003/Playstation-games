@@ -1,15 +1,15 @@
-<div class='game-container p-3 text-primary-emphasis bg-primary-subtle border border-primary-subtle rounded-3'>
-    <a class="bg-primary-subtle" href="{{route('games.detail', $game)}}">
+<div class='game-container p-3 border rounded-3'>
+    <a href="{{route('games.detail', $game)}}">
         <h4>{{$game->title}}</h4>
         @if($game->image)
             <img class='pic' src="{{ asset('storage/' . $game->image) }}" alt="{{ $game->title }} Image">
         @endif
 
-        <p>Rating: {{$game->rating}}</p>
+        <p>Total Rating: {{ $game->total_rating }}</p>
         <p>Genres:</p>
         <ul>
             @foreach($game->genres as $genre)
-                <li>{{$genre->genre_name}}</li>
+                <p>{{$genre->genre_name}}</p>
             @endforeach
 
         </ul>

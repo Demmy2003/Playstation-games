@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\Comment;
 use App\Models\Game;
 use App\Models\Genre;
 use App\Models\Mode;
+use App\Models\Rating;
 use App\Models\User;
 
 use Illuminate\Http\Request;
@@ -13,61 +15,68 @@ use Illuminate\Support\Facades\Validator;
 
 class GameController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $games = Game::all();
-        $genres = Genre::all(); // Load genres
-        $modes = Mode::all();   // Load modes
-        return view('games.index',  ['games' => $games, 'genres' => $genres, 'modes' => $modes]);
-    }
-    public function search(Request $request)
-    {
-        $search = $request->input('search');
-
-        $games = Game::where('title', 'like', "%$search%")->get();
-
-        return view('games.search', compact('games', 'search'));
-    }
-    public function filter(Request $request)
-    {
-        // Get selected genres and modes from the form
         $selectedGenres = $request->input('genres', []);
         $selectedModes = $request->input('modes', []);
+        $search = $request->input('search');
+        $clearFilters = $request->has('clear_filters');
 
-        // Query the games based on the selected filters
+        // Initialize a base query with filters
         $query = Game::with('genres', 'modes');
 
-        if ($request->has('clear_filters')) {
-            // Redirect to the filter page without the 'genres' and 'modes' parameters
-            return redirect()->route('games.filter')->except(['genres', 'modes']);
-        }
-// Check if any genres are selected
         if (!empty($selectedGenres)) {
-            foreach ($selectedGenres as $genreId) {
-                $query->whereHas('genres', function ($q) use ($genreId) {
-                    $q->where('genre_id', $genreId);
-                });
-            }
+            $query->whereHas('genres', function ($q) use ($selectedGenres) {
+                $q->whereIn('genre_id', $selectedGenres);
+            });
         }
 
-// Check if any modes are selected
         if (!empty($selectedModes)) {
-            foreach ($selectedModes as $modeId) {
-                $query->whereHas('modes', function ($q) use ($modeId) {
-                    $q->where('mode_id', $modeId);
-                });
-            }
+            $query->whereHas('modes', function ($q) use ($selectedModes) {
+                $q->whereIn('mode_id', $selectedModes);
+            });
         }
 
-// Get the filtered games
+        if ($clearFilters) {
+            // Handle the clear filters request
+            return redirect()->route('games.index')->except(['genres', 'modes']);
+        }
+
+        if ($search) {
+            // Add search condition to the query
+            $query->where('title', 'like', "%$search%");
+        }
+
+        // Get the filtered games
         $games = $query->get();
+        $genres = Genre::all();
+        $modes = Mode::all();
 
-
-        return view('games.filter', compact( 'games', 'selectedGenres', 'selectedModes'));
+        return view('games.index', compact('games', 'genres', 'modes', 'selectedGenres', 'selectedModes', 'search'));
     }
+
+
     public function detail(Game $game)
     {
-        return view('games.detail', compact('game'));
+        $comments = Comment::all();
+        return view('games.detail', compact('game', 'comments'));
+    }
+
+    public function comment(Request $request, Game $game){
+
+        $data = $request->validate([
+            'comment' => 'required|string',
+        ]);
+        if($data) {
+            Comment::create([
+                'comment' => $data['comment'],
+                'game_id' => $game->id,
+                'user_id' => Auth::user()->id,
+            ]);
+            return redirect()->route('games.detail', $game)
+                ->with('success', "Comment added successfully");
+        }
+
     }
 
     public function store(Request $request)
@@ -147,6 +156,32 @@ class GameController extends Controller
         $game->modes()->detach();
         return redirect()->route('games.index')
             ->with('success',  "$game->title was successfully deleted");
+    }
+    public function rate(Game $game, $type)
+    {
+        $user = auth()->user();
+        $existingRating = $game->ratings()->where('user_id', $user->id)->first();
+
+        if ($existingRating) {
+            // User has already rated, update the rating if needed
+            if ($existingRating->type !== $type) {
+                $existingRating->type = $type;
+                $existingRating->save();
+            }
+        } else {
+            // User is rating for the first time
+            $newRating = new Rating([
+                'user_id' => $user->id,
+                'game_id' => $game->id,
+                'type' => $type,
+            ]);
+            $newRating->save();
+        }
+
+        // Update the total rating for the game
+        $game->calculateTotalRating();
+
+        return back();
     }
 
 
